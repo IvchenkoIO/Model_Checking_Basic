@@ -10,13 +10,13 @@ int	turn	:= 1;
 		<parameter>const int pid</parameter>
 		<declaration>//Insert local declarations of clocks, variables and constants.</declaration>
 		<location id="id0" x="-68" y="161">
-			<name x="-156" y="137">remainder</name>
+			<name x="-156" y="137">init</name>
 		</location>
 		<location id="id1" x="255" y="161">
 			<name x="245" y="127">flag_check</name>
 		</location>
-		<location id="id2" x="578" y="34">
-			<name x="568" y="0">turn_check</name>
+		<location id="id2" x="620" y="153">
+			<name x="610" y="119">turn_check</name>
 		</location>
 		<location id="id3" x="256" y="288">
 			<name x="272" y="296">critical_section</name>
@@ -24,14 +24,14 @@ int	turn	:= 1;
 		<location id="id4" x="-68" y="289">
 			<name x="-78" y="255">critical_section_two</name>
 		</location>
-		<location id="id5" x="578" y="-93">
-			<name x="568" y="-127">flag_upd_false</name>
+		<location id="id5" x="620" y="25">
+			<name x="610" y="-9">flag_upd_false</name>
 		</location>
-		<location id="id6" x="256" y="-96">
-			<name x="246" y="-130">busy_wait</name>
+		<location id="id6" x="620" y="-110">
+			<name x="610" y="-144">busy_wait</name>
 		</location>
-		<location id="id7" x="256" y="32">
-			<name x="246" y="-2">flag_upd_true</name>
+		<location id="id7" x="255" y="-102">
+			<name x="262" y="-134">flag_upd_true</name>
 		</location>
 		<init ref="id0"/>
 		<transition id="id8">
@@ -42,8 +42,8 @@ int	turn	:= 1;
 		<transition id="id9">
 			<source ref="id1"/>
 			<target ref="id2"/>
-			<label kind="guard" x="348" y="161">flag[1-pid] == true</label>
-			<nail x="578" y="153"/>
+			<label kind="guard" x="637" y="229">flag[1-pid] == true</label>
+			<nail x="620" y="323"/>
 		</transition>
 		<transition id="id10">
 			<source ref="id1"/>
@@ -63,25 +63,25 @@ int	turn	:= 1;
 		<transition id="id13">
 			<source ref="id2"/>
 			<target ref="id5"/>
-			<label kind="guard" x="586" y="-51">turn == 1-pid</label>
+			<label kind="guard" x="629" y="59">turn == 1-pid</label>
 		</transition>
 		<transition id="id14">
 			<source ref="id2"/>
 			<target ref="id1"/>
-			<label kind="guard" x="357" y="59">turn == pid</label>
+			<label kind="guard" x="374" y="119">turn == pid</label>
 		</transition>
 		<transition id="id15">
 			<source ref="id5"/>
 			<target ref="id6"/>
-			<label kind="assignment" x="348" y="-119">flag[pid] = false</label>
+			<label kind="assignment" x="629" y="-68">flag[pid] = false</label>
 		</transition>
 		<transition id="id16">
 			<source ref="id6"/>
 			<target ref="id6"/>
-			<label kind="guard" x="176" y="-184">turn == 1-pid</label>
-			<nail x="256" y="-160"/>
-			<nail x="192" y="-160"/>
-			<nail x="192" y="-96"/>
+			<label kind="guard" x="688" y="-178">turn == 1-pid</label>
+			<nail x="620" y="-238"/>
+			<nail x="680" y="-161"/>
+			<nail x="722" y="-110"/>
 		</transition>
 		<transition id="id17">
 			<source ref="id6"/>
