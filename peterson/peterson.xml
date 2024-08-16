@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Number of processes
+
+bool flag[2] = {false, false};
+
+int[0,1] turn;</declaration>
+	<template>
+		<name x="5" y="5">P</name>
+		<parameter>const int pid</parameter>
+		<declaration>//Insert local declarations of clocks, variables and constants.
+</declaration>
+		<location id="id0" x="238" y="59">
+			<name x="228" y="25">init_state</name>
+		</location>
+		<location id="id1" x="442" y="59">
+			<name x="432" y="25">turn_upd</name>
+		</location>
+		<location id="id2" x="680" y="51">
+			<name x="612" y="0">flag_and_turn_check</name>
+		</location>
+		<location id="id3" x="680" y="255">
+			<name x="620" y="272">critical_section</name>
+		</location>
+		<location id="id4" x="986" y="51">
+			<name x="1003" y="34">busy_wait</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id5">
+			<source ref="id4"/>
+			<target ref="id4"/>
+			<label kind="guard" x="867" y="-187">flag[1-pid]==true &amp;&amp; turn==1-pid</label>
+			<nail x="994" y="-170"/>
+			<nail x="1079" y="-76"/>
+		</transition>
+		<transition id="id6">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="280" y="42">flag[pid]=true</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="527" y="34">turn=1-pid</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="391" y="127">flag[1-pid]!=true || turn!=1-pid</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="102" y="162">flag[pid]=false</label>
+			<nail x="238" y="272"/>
+			<nail x="238" y="170"/>
+			<nail x="238" y="153"/>
+		</transition>
+		<transition id="id10">
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="guard" x="697" y="17">flag[1-pid]==true &amp;&amp; turn==1-pid</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="824" y="161">flag[1-pid]!=true || turn!=1-pid</label>
+		</transition>
+	</template>
+	<system>P0 = P(0);
+P1 = P(1);
+system P0,P1;</system>
+	<queries>
+		<query>
+			<formula>A[]( not (P0.critical_section and P1.critical_section) )</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-08-09 03:38:58 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; not (P0.busy_wait &amp;&amp; P1.busy_wait)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-08-16 19:05:08 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E[] (P0.busy_wait || P1.busy_wait)</formula>
+			<comment/>
+			<result outcome="failure" type="quality" timestamp="2024-08-16 19:05:07 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-08-09 03:39:00 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>

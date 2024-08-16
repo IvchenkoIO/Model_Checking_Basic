@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>
+bool 	flag[2] := {false, false};
+int	turn	:= 1;
+</declaration>
+	<template>
+		<name x="5" y="5">Process</name>
+		<parameter>const int pid</parameter>
+		<declaration>//Insert local declarations of clocks, variables and constants.</declaration>
+		<location id="id0" x="-68" y="161">
+			<name x="-156" y="137">init_state</name>
+		</location>
+		<location id="id1" x="255" y="161">
+			<name x="245" y="127">flag_check</name>
+		</location>
+		<location id="id2" x="620" y="153">
+			<name x="610" y="119">turn_check</name>
+		</location>
+		<location id="id3" x="256" y="288">
+			<name x="272" y="296">critical_section</name>
+		</location>
+		<location id="id4" x="-68" y="289">
+			<name x="-78" y="255">critical_section_two</name>
+		</location>
+		<location id="id5" x="620" y="-110">
+			<name x="610" y="-144">busy_wait</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id6">
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="guard" x="357" y="-8">turn == pid</label>
+			<label kind="assignment" x="289" y="25">flag[pid] = true</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="629" y="221">turn == pid &amp;&amp; flag[1-pid] == false</label>
+			<nail x="620" y="297"/>
+		</transition>
+		<transition id="id8">
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="guard" x="629" y="-17">turn == 1-pid</label>
+			<label kind="assignment" x="629" y="34">flag[pid] = false</label>
+			<nail x="620" y="17"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="42" y="136">flag[pid] = true</label>
+		</transition>
+		<transition id="id10">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="391" y="221">flag[1-pid] == true</label>
+			<nail x="467" y="221"/>
+		</transition>
+		<transition id="id11">
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="guard" x="93" y="212">flag[1-pid] == false</label>
+		</transition>
+		<transition id="id12">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="34" y="289">turn = 1-pid</label>
+		</transition>
+		<transition id="id13">
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-221" y="212">flag[pid] = false</label>
+		</transition>
+		<transition id="id14">
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="374" y="119">turn == pid</label>
+		</transition>
+		<transition id="id15">
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<label kind="guard" x="688" y="-178">turn == 1-pid</label>
+			<nail x="620" y="-238"/>
+			<nail x="680" y="-161"/>
+			<nail x="722" y="-110"/>
+		</transition>
+	</template>
+	<system>//Insert process assignments.
+P0 := Process(0);
+P1 := Process(1);
+//Edit system definition.
+system P0, P1;</system>
+	<queries>
+		<query>
+			<formula>A[] not (P0.critical_section and P1.critical_section) and
+   not (P0.critical_section_two and P1.critical_section) and
+   not (P1.critical_section_two and P0.critical_section) and
+   not (P1.critical_section_two and P0.critical_section_two)</formula>
+			<comment/>
+			<option key="--diagnostic" value="0"/>
+			<result outcome="success" type="quality" timestamp="2024-08-16 18:58:04 +0200">
+				<option key="--diagnostic" value="0"/>
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; not (P0.busy_wait &amp;&amp; P1.busy_wait)</formula>
+			<comment/>
+			<option key="--diagnostic" value="0"/>
+			<result outcome="success" type="quality" timestamp="2024-08-16 18:51:02 +0200">
+				<option key="--diagnostic" value="0"/>
+			</result>
+		</query>
+		<query>
+			<formula>E[] (P0.busy_wait || P1.busy_wait)</formula>
+			<comment/>
+			<option key="--diagnostic" value="2"/>
+			<result outcome="failure" type="quality" timestamp="2024-08-16 18:51:04 +0200">
+				<option key="--diagnostic" value="2"/>
+			</result>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-08-16 18:50:35 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>
